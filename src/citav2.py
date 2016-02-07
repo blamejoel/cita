@@ -44,6 +44,9 @@ if 'cat' in classes:
     print 'cat found!'
 else:
     print 'no cat!'
+print 'also found the following tags'
+for item in classes:
+    print item
 #print classes
 #tag = result['result']
 #classes = tag['classes']
