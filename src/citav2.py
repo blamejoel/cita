@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import requests
 import json
@@ -29,5 +30,23 @@ curl_post = 'curl -H "Authorization: Bearer ' + token + '" -F "encoded_data=@' +
 #data = {'encoded_data':encoded}
 #r = requests.post(url, data=data, headers=auth)
 #r = json.loads(r.text)
-r = os.popen(curl_post).read()
-print r['result']
+#r = os.popen(curl_post).read()
+print 'processing image...'
+FNULL = open(os.devnull, 'w')
+SUBOUT = subprocess.PIPE
+r = subprocess.Popen(curl_post, shell=True, stdout=SUBOUT, stderr=FNULL).stdout.read()
+r = json.loads(r)
+results = r['results']
+result = results[0]
+result = result['result']
+tag = result['tag']
+classes = tag['classes']
+if 'cat' in classes:
+    print 'cat found!'
+else:
+    print 'no cat!'
+#print classes
+#tag = result['result']
+#classes = tag['classes']
+#print classes
+#print r['results']
