@@ -3,9 +3,8 @@ import subprocess
 import sys
 import requests
 import json
-import base64
 
-
+subprocess.call('./capture.sh')
 url = 'https://api.clarifai.com/v1/tag/'
 #image = '/home/udooer/cita/images/' + sys.argv[1]
 image = '../images/' + sys.argv[1]
