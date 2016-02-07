@@ -6,10 +6,10 @@ import sys
 import requests
 import json
 
-keyword = 'cat'
-image = '/home/udooer/cita/images/cita.jpg'
-#keyword = sys.argv[2]
-#image = '../images/' + sys.argv[1]
+#keyword = 'cat'
+#image = '/home/udooer/cita/images/cita.jpg'
+keyword = sys.argv[2]
+image = '../images/' + sys.argv[1]
 client = '_lU738vc9I26-7maXim-UbjYe0g9NztV6Msdwj3q'
 secret = '6jzYsuqZh85eqyK4rSfYsG0Z3qaedLmHVj1SRXg0'
 auth_data = {'client_id':client, 'client_secret':secret,'grant_type':'client_credentials'}
@@ -22,12 +22,13 @@ ser = serial.Serial('/dev/ttyMCC',9600,timeout=1)  # Defining the port to be use
 
 samples = 10
 count = 0
-while count < samples:
+#while count < samples:
+while 1:
     #ser.flushOutput()                                  # Ensuring that there is no bytes left over in the output
     incoming =  ser.read(1)
     if incoming == 'i':                                        # Read one byte from the Arduino 
 
-        count = count + 1
+        #count = count + 1
         #Instruct Camera to take pic, and send the pic to be compared 
         subprocess.call('/home/udooer/cita/src/./capture.sh')
         print 'capturing image'
@@ -50,6 +51,8 @@ while count < samples:
             ser.write(chr(78))                                   # ASCII for 'N'
             #print 'no cat!'
             print 'false alarm'
-            print classes
-    time.sleep(1)                                      # delay for 1 second
-print 'max samples reached!'
+            print 'no ' + keyword + ' found, but found the following:'
+            for item in classes:
+                print item
+    time.sleep(0.5)                                      # delay for 1 second
+#print 'max samples reached!'
