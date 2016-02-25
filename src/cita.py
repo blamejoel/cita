@@ -1,3 +1,4 @@
+import time
 import serial
 import time
 import os
@@ -10,19 +11,22 @@ import json
 #iftt= 'https://maker.ifttt.com/trigger/cat/with/key/' + ifttkey
 iftt = 'curl -X POST https://maker.ifttt.com/trigger/cat/with/key/ucScUYfG0zXxczjJol7Z3'
 print 'starting cat in the act...'
+timestamp = time.strftime("%Y%m%d-%H%M%S")
+print 'on ' + timestamp
 #keyword = 'cat'
 #image = '/home/udooer/cita/images/cita.jpg'
 hr = '-----------------------------------------------'
 keyword = sys.argv[2]
-image = '../images/' + sys.argv[1]
+#image = '../images/' + sys.argv[1]
 client = '_lU738vc9I26-7maXim-UbjYe0g9NztV6Msdwj3q'
 secret = '6jzYsuqZh85eqyK4rSfYsG0Z3qaedLmHVj1SRXg0'
 auth_data = {'client_id':client, 'client_secret':secret,'grant_type':'client_credentials'}
 response = requests.post('https://api.clarifai.com/v1/token/', data=auth_data)
 response = json.loads(response.text)
 token = response['access_token']
-curl_post = 'curl -H "Authorization: Bearer ' + token + '" -F "encoded_data=@' + image + '" "https://api.clarifai.com/v1/tag/"'
-capture = 'fswebcam -r 800x600 -d /dev/video1 /home/udooer/cita/images/cita.jpg'
+#curl_post = 'curl -H "Authorization: Bearer ' + token + '" -F "encoded_data=@' + image + '" "https://api.clarifai.com/v1/tag/"'
+timestamp = time.strftime("%Y%m%d-%H%M%S")
+#capture = 'fswebcam -r 800x600 -d /dev/video1 /home/udooer/cita/images/cita-' + timestamp + '.jpg'
 
 ser = serial.Serial('/dev/ttyMCC',9600,timeout=1)  # Defining the port to be used for commo
 
@@ -41,9 +45,13 @@ while 1:
         #subprocess.call('/home/udooer/cita/src/./capture.sh')
         print hr
         print
-        print 'capturing image'
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        print 'capturing image on ' + timestamp
         FNULL = open(os.devnull, 'w')
         SUBOUT = subprocess.PIPE
+        image = '../images/cita-' + timestamp + '.jpg'
+        curl_post = 'curl -H "Authorization: Bearer ' + token + '" -F "encoded_data=@' + image + '" "https://api.clarifai.com/v1/tag/"'
+        capture = 'fswebcam -r 800x600 -d /dev/video1 /home/udooer/cita/images/cita-' + timestamp + '.jpg'
         s = subprocess.Popen(capture, shell=True, stdout=SUBOUT, stderr=FNULL).stdout.read()
         r = subprocess.Popen(curl_post, shell=True, stdout=SUBOUT, stderr=FNULL).stdout.read()
         r = json.loads(r)
